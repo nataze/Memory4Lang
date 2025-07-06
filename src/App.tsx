@@ -18,6 +18,9 @@ const dropAudio = new Audio(dropSound);
 const failAudio = new Audio(failSound);
 const celebrationAudio = new Audio(celebrationSound);
 
+const veryGoodScore = 80;
+const passScore = 50;
+
 
 function App() {
   const [gameStarted, setGameStarted] = useState<boolean>(false)
@@ -28,10 +31,11 @@ function App() {
 
 
   const startGame = () => {
+    setGameStarted(true);
+
     setEnglishWords(shuffle(languageTranslations.map(w => w.en)));
     setFrenchWords(shuffle(languageTranslations.map(w => w.fr)));
     setMatches({ bank: languageTranslations.map(w => w.en) });
-    setGameStarted(true);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -40,8 +44,6 @@ function App() {
     const activeId = String(active?.id);
 
     if (over && active) {
-      dropAudio.play();
-
       setMatches((prev) => {
         const updated: Record<string, string[]> = {};
 
@@ -55,6 +57,10 @@ function App() {
 
         return updated;
       });
+
+      if (overId !== 'bank') {
+        dropAudio.play();
+      }
     }
   };
 
@@ -70,9 +76,11 @@ function App() {
 
     const percent = (correct / total) * 100;
 
-    if (percent >= 90) {
+    if (percent >= veryGoodScore) {
       celebrationAudio.play();
       confetti({ particleCount: 1500, spread: 200 });
+    } else if (percent >= passScore) {
+      celebrationAudio.play();
     } else {
       failAudio.play();
     }
