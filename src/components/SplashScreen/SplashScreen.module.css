@@ -33,19 +33,26 @@
 }
 
 .cardBack {
-  background-color: #7e5bef;
+  background-color: #f97316;
   color: white;
 }
 
 .goButton {
   font-family: 'Comic Sans MS', sans-serif;
-  padding: 0.5rem 1.5rem;
+  font-size: 1.5rem;
   background-color: #7e5bef;
   color: white;
+  padding: 0.75rem 2rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.goButton:hover {
+  background-color: #6843db;
+  transform: scale(1.05);
 }
 
 .title {
