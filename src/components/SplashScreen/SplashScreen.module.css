@@ -1,0 +1,64 @@
+.splash {
+  text-align: center;
+  padding: 2rem;
+  animation: fadeIn 0.8s ease;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.cardPreviewRow {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cardFront,
+.cardBack {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  background-color: #fff8dc;
+  border: 2px solid #333;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  font-family: 'Comic Neue', cursive;
+}
+
+.cardBack {
+  background-color: #7e5bef;
+  color: white;
+}
+
+.goButton {
+  font-family: 'Comic Sans MS', sans-serif;
+  padding: 0.5rem 1.5rem;
+  background-color: #7e5bef;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-family: 'Comic Sans MS', sans-serif;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  margin: 6rem auto;
+  max-width: 600px;
+  text-align: center;
+  color: #333;
+}
