@@ -12,7 +12,7 @@ export const DraggableWord = ({ word, inBank = false }: { word: string; inBank?:
   const handleMouseDown = () => {
     if (!isMuted) {
       const audio = new Audio(dragSound);
-      audio.play().catch(() => {});
+      audio.play();
     }
   };
 
