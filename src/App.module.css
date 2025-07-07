@@ -40,8 +40,6 @@
   background-color: #e53e3e;
 }
 
-
-
 .columns {
   font-family: 'Comic Sans MS', sans-serif;
   display: flex;
@@ -121,6 +119,9 @@
 }
 
 @media (max-width: 600px) {
+  .columns {
+    margin-top: 0.5rem;
+  }
   .droppable,
   .droppableOver {
     display: block;
