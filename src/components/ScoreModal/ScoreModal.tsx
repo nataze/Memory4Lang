@@ -15,7 +15,7 @@ export const ScoreModal = React.memo(({ correct, total, closeModal }: {
 
   const message = useMemo(() => {
     return name
-      ? `Well done, ${name}! You matched ${correct} of ${total} correctly.`
+      ? `${scorePercentage > 50 ? 'Well done' : 'Hey'}, ${name}! You matched ${correct} of ${total} correctly.`
       : `You matched ${correct} of ${total} correctly!`
   }, [name, correct, total]);
 
