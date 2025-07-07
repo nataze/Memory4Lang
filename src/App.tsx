@@ -22,6 +22,7 @@ import failSound from './assets/sounds/fail.mp3';
 import celebrationSound from './assets/sounds/victory.mp3';
 import { useSettings } from './contexts/SettingsContext';
 import { SettingsModal } from './components/SettingsModal/SettingsModal';
+import { SplashScreen } from './components/SplashScreen/SplashScreen';
 
 const dropAudio = new Audio(dropSound);
 const failAudio = new Audio(failSound);
@@ -146,20 +147,17 @@ function App() {
         ☰
       </button>
 
-      {!gameStarted && (
-        <div className={styles.splash}>
-          <h1 className={styles.title}>Memory4Lang 🎯</h1>
-          <p className={styles.description}>
-            Match each {reverseDirection ? 'French' : 'English'} word with its correct {reverseDirection ? 'English' : 'French'} translation.<br />
-            Drag and drop from the word bank to the correct row.
-          </p>
-          <p>🎯 Score 50% to pass. Score 80%+ to be exceptional and unlock a surprise!</p>
-          <button onClick={startGame} className={styles.goButton}>GO!</button>
-        </div>
-      )}
+      {!gameStarted && <SplashScreen startGame={startGame} />}
+
 
       {gameStarted && (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <div className={styles.topControls}>
+            <button className={styles.backButton} onClick={() => setGameStarted(false)}>
+              ⬅ Back
+            </button>
+          </div>
+
           <div className={styles.centered}>
             <button
               onClick={grade}
