@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './App.module.css';
 import confetti from 'canvas-confetti';
 
@@ -119,7 +119,7 @@ function App() {
     } else if (!isMuted) {
       failAudio.play();
     }
-  }, [matches, isMuted]);
+  }, [matches, isMuted, reverseDirection]);
 
   const closeModal = () => {
     setScoreModal({ open: false, correct: 0, total: 0 });

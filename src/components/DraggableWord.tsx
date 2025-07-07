@@ -2,14 +2,20 @@ import { useDraggable } from '@dnd-kit/core';
 import styles from '../App.module.css';
 import dragSound from '../assets/sounds/drag.mp3'
 import { useSettings } from '../contexts/SettingsContext';
-import React from 'react';
 
 
-const dragAudio = new Audio(dragSound);
 
 
-export const DraggableWord = React.memo(({ word, inBank = false }: { word: string; inBank?: boolean }) => {
+export const DraggableWord = ({ word, inBank = false }: { word: string; inBank?: boolean }) => {
   const { isMuted } = useSettings();
+
+  const handleMouseDown = () => {
+    if (!isMuted) {
+      const audio = new Audio(dragSound);
+      audio.play().catch(() => {});
+    }
+  };
+
 
   const { 
     attributes,
@@ -29,9 +35,10 @@ export const DraggableWord = React.memo(({ word, inBank = false }: { word: strin
       {...attributes}
       style={style}
       className={`${styles.draggable} ${inBank ? styles.inBank : ''}`}
-      onMouseDown={() => !isMuted && dragAudio.play()}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
     >
       {word}
     </div>
   );
-});
+}
