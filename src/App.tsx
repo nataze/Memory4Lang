@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './App.module.css';
 import confetti from 'canvas-confetti';
 
@@ -125,12 +125,15 @@ function App() {
     setGameStarted(false);
   };
 
+  const prevDirectionRef = useRef(reverseDirection);
+
   const handleSaveSettings = useCallback(() => {
-    if (gameStarted) {
-      // restart the game with new settings
-      startGame()   
+    if (gameStarted && reverseDirection !== prevDirectionRef.current) {
+      // If reverse direction changed while game is in progress, restart the game
+      startGame();
+      prevDirectionRef.current = reverseDirection;
     }
-  }, [gameStarted]);
+  }, [gameStarted, reverseDirection, startGame]);
 
 
   return (

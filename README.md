@@ -1,46 +1,78 @@
-# Getting Started with Create React App
+#  [Memory4Lang](https://main.d21ai12uuembj2.amplifyapp.com/) 🧠
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Memory4Lang** is a fun, interactive drag-and-drop memory game for learning French translations. It's designed to help users practice their vocabulary by matching English and French words, all within a playful interface inspired by the classic "Memory" game.
 
-## Available Scripts
+You can access a deployed version of the game [here](https://main.d21ai12uuembj2.amplifyapp.com/)
 
-In the project directory, you can run:
 
-### `npm start`
+## 🎮 How the Game Works 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- You are presented with two columns:
+    - A **bank** of draggable words
+    - A **target column** of fixed rows, each representing a word in the target language
+- Your task is to **drag each word from the bank** and drop it on the row representing its correct translation.
+- You can move words back to the bank and rearrange them freely
+- Once you're done, click **GRADE** to evaluate your performance
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+## ✨ Scoring System
+- **80% and above**: Exceptional 🎉 Confetti and sound effects celebrate your mastery.
+- **50% to 79%**: Solid pass ✅ — a job well done.
+- **Below 50%**: Encouragement to try again ☹️.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The game is fully **mobile-friendly**, supports **touch-based drag-and-drop**, and adjusts its layout for smaller screens.
 
-### `npm run build`
+## ⚙️ Game Settings
+Accessible via the top-right **menu button (☰),** the Settings Modal allows you to:
+- **Reverse the direction**: Switch from English -> French or French -> English
+- **Mute sounds**: Toggle sound effects
+- **Personalize**: Enter your name for custome score message when graded
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Settings are saved to `sessionStorage` and persist during your session.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ⚡ Running the App
 
-### `npm run eject`
+### Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Ensure you [Docker](https://www.docker.com/) installed >= 4.37.2
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Build image
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+npm run docker:build          # build app image
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Run app (cross-platform: Windows, macOS, Linux)
 
-## Learn More
+```bash
+npm run docker:run          # run app on localhost
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Visit http://localhost:3000 in your browser.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Run test
+
+```bash
+npm run docker:build:test     # build test image
+npm run docker:test           # run unit test
+```
+
+
+## 🔍 Features Implemented
+
+### ✅ Core Features:
+- Drag-and-drop game matching English and French words
+- Two-column layout: draggable bank and fixed droppable rows
+- Allow multiple words per row
+- Styled using CSS Modules for a clean, custom look
+- Sticky grade button
+- Responsive design and touch support
+
+## ➕ Extra Features Added
+- ⚙ Settings Modal (reverse mode, mute sound effects, name input)
+- Personalized score feedback
+- Confetti celebration for high scores
+- Sound effects: drag, drop, pass/fail
+- Fully mobile-optimized (touch dragging, responsive layout)
+- Persistent session settings via sessionStorage
