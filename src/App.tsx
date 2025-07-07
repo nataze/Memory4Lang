@@ -4,7 +4,14 @@ import confetti from 'canvas-confetti';
 
 import { shuffle } from './helpers';
 import { languageTranslations } from './data';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
 import { DraggableWord } from './components/DraggableWord';
 import { DroppableRow } from './components/DroppableRow';
 import { DroppableBank } from './components/DroppableBank';
@@ -24,7 +31,6 @@ const passScore = 50;
 
 function App() {
   const [gameStarted, setGameStarted] = useState<boolean>(false)
-  const [englishWords, setEnglishWords] = useState<string[]>([]);
   const [frenchWords, setFrenchWords] = useState<string[]>([]);
   const [matches, setMatches] = useState<Record<string, string[]>>({});
   const [scoreModal, setScoreModal] = useState<{ open: boolean; correct: number; total: number }>({ open: false, correct: 0, total: 0 });
@@ -33,7 +39,6 @@ function App() {
   const startGame = () => {
     setGameStarted(true);
 
-    setEnglishWords(shuffle(languageTranslations.map(w => w.en)));
     setFrenchWords(shuffle(languageTranslations.map(w => w.fr)));
     setMatches({ bank: languageTranslations.map(w => w.en) });
   };
@@ -91,6 +96,11 @@ function App() {
     setGameStarted(false);
   };
 
+  const sensors = useSensors(
+  useSensor(PointerSensor),
+  useSensor(TouchSensor)
+);
+
   return (
     <div className={styles.appContainer}>
       {!gameStarted && (
@@ -104,7 +114,7 @@ function App() {
       )}
 
       {gameStarted && (
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <div className={styles.centered}>
             <button
               onClick={grade}
