@@ -12,7 +12,7 @@
 
 .title {
   font-size: 2.5rem;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-family: 'Comic Sans MS', sans-serif;
   font-weight: bold;
   margin-bottom: 1rem;
 }
@@ -27,6 +27,7 @@
 
 
 .goButton {
+  font-family: 'Comic Sans MS', sans-serif;
   padding: 0.5rem 1.5rem;
   background-color: #7e5bef;
   color: white;
@@ -37,6 +38,7 @@
 }
 
 .columns {
+  font-family: 'Comic Sans MS', sans-serif;
   display: flex;
   justify-content: center;
   gap: 2rem;
@@ -112,6 +114,7 @@
 }
 
 .centered {
+  font-family: 'Comic Sans MS', sans-serif;
   position: sticky;
   top: 0;
   background-color: #fffdf5;
