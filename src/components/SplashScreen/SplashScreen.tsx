@@ -17,7 +17,7 @@ export const SplashScreen = React.memo(({ startGame }: {
             <div className={styles.cardFront}>🍎</div>
           </div>
           <button onClick={startGame} className={styles.goButton}>GO!</button>
-          <p className={styles.description}>Score 50% to pass. Score over 80% to be exceptional and unlock a surprise!</p>
+          <p className={styles.description}>Score 50% to pass. Score 80% to unlock the confetti!</p>
         </div>
   )
 });
