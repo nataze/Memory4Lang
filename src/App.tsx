@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './App.module.css';
 import confetti from 'canvas-confetti';
 
@@ -20,6 +20,8 @@ import { ScoreModal } from './components/ScoreModal/ScoreModal';
 import dropSound from './assets/sounds/drop.mp3';
 import failSound from './assets/sounds/fail.mp3';
 import celebrationSound from './assets/sounds/victory.mp3';
+import { useSettings } from './contexts/SettingsContext';
+import { SettingsModal } from './components/SettingsModal/SettingsModal';
 
 const dropAudio = new Audio(dropSound);
 const failAudio = new Audio(failSound);
@@ -30,26 +32,50 @@ const passScore = 50;
 
 
 function App() {
+  const { reverseDirection, isMuted } = useSettings();
+
   const [gameStarted, setGameStarted] = useState<boolean>(false)
-  const [frenchWords, setFrenchWords] = useState<string[]>([]);
+  const [targetWords, setTargetWords] = useState<string[]>([]);
   const [matches, setMatches] = useState<Record<string, string[]>>({});
   const [scoreModal, setScoreModal] = useState<{ open: boolean; correct: number; total: number }>({ open: false, correct: 0, total: 0 });
+  const [showSettings, setShowSettings] = useState(false);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor)
+  );
 
-  const startGame = () => {
+  const getShuffledWords = useCallback(() => {
+    if (reverseDirection) {
+      // French to English
+      setTargetWords(shuffle(languageTranslations.map(w => w.en)));
+      setMatches({ bank: languageTranslations.map(w => w.fr) });
+    } else {     
+      // English to French - original direction
+      setTargetWords(shuffle(languageTranslations.map(w => w.fr)));
+      setMatches({ bank: languageTranslations.map(w => w.en) });
+    }
+  }, [reverseDirection]);
+
+  useEffect(() => {
+    getShuffledWords();
+  }, [reverseDirection]);
+
+  const startGame = useCallback(() => {
     setGameStarted(true);
 
-    setFrenchWords(shuffle(languageTranslations.map(w => w.fr)));
-    setMatches({ bank: languageTranslations.map(w => w.en) });
-  };
+    getShuffledWords();
+  }, [getShuffledWords]);
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { over, active } = event;
     const overId = String(over?.id);
     const activeId = String(active?.id);
 
     if (over && active) {
       setMatches((prev) => {
+        if (prev[overId]?.includes(activeId)) return prev;
+
         const updated: Record<string, string[]> = {};
 
         // Remove the word from any existing lists
@@ -63,52 +89,68 @@ function App() {
         return updated;
       });
 
-      if (overId !== 'bank') {
+      if (!isMuted && overId !== 'bank') {
         dropAudio.play();
       }
     }
-  };
+  }, [isMuted]);
 
-  const grade = () => {
+  const grade = useCallback(() => {
     let correct = 0;
     let total = 0;
 
     languageTranslations.forEach(({ en, fr }) => {
-      if (matches[fr]?.includes(en)) correct++;
+      const source = reverseDirection ? fr : en;
+      const target = reverseDirection ? en : fr;
+      if (matches[target]?.includes(source)) correct++;
       total++;
     });
+
     setScoreModal({ open: true, correct, total });
 
     const percent = (correct / total) * 100;
 
     if (percent >= veryGoodScore) {
-      celebrationAudio.play();
+      !isMuted && celebrationAudio.play();
       confetti({ particleCount: 1500, spread: 200 });
-    } else if (percent >= passScore) {
+    } else if ( !isMuted && percent >= passScore) {
       celebrationAudio.play();
-    } else {
+    } else if (!isMuted) {
       failAudio.play();
     }
-  };
+  }, [matches, isMuted]);
 
   const closeModal = () => {
     setScoreModal({ open: false, correct: 0, total: 0 });
     setGameStarted(false);
   };
 
-  const sensors = useSensors(
-  useSensor(PointerSensor),
-  useSensor(TouchSensor)
-);
+  const handleSaveSettings = useCallback(() => {
+    if (gameStarted) {
+      // restart the game with new settings
+      startGame()   
+    }
+  }, [gameStarted]);
+
 
   return (
     <div className={styles.appContainer}>
+      <button
+        className={styles.menuButton}
+        onClick={() => setShowSettings(true)}
+        aria-label="Open settings"
+      >
+        ☰
+      </button>
+
       {!gameStarted && (
         <div className={styles.splash}>
           <h1 className={styles.title}>Memory4Lang 🎯</h1>
           <p className={styles.description}>
-            Match each English word with its correct French translation. Drag and drop from the word bank to the correct French row. Let’s see how many you can get right!
+            Match each {reverseDirection ? 'French' : 'English'} word with its correct {reverseDirection ? 'English' : 'French'} translation.<br />
+            Drag and drop from the word bank to the correct row.
           </p>
+          <p>🎯 Score 50% to pass. Score 80%+ to be exceptional and unlock a surprise!</p>
           <button onClick={startGame} className={styles.goButton}>GO!</button>
         </div>
       )}
@@ -126,23 +168,23 @@ function App() {
           
           <div className={styles.columns}>
             <div>
-              <h2 className={styles.columnTitle}>English Words</h2>
+              <h2 className={styles.columnTitle}>{reverseDirection ? 'French Words' : 'English Words'}</h2>
               <div className={styles.wordList}>
                 <DroppableBank>
                   {matches['bank']?.map((word) => (
-                    <DraggableWord key={word} word={word} />
+                    <DraggableWord inBank key={word} word={word} />
                   ))}
                 </DroppableBank>
               </div>
             </div>
 
             <div>
-              <h2 className={styles.columnTitle}>French Words</h2>
+              <h2 className={styles.columnTitle}>{reverseDirection ? 'English Words' : 'French Words'}</h2>
               <div className={styles.wordList}>
-                {frenchWords.map((fr) => (
-                  <DroppableRow key={fr} fr={fr}>
-                    {matches[fr]?.map((en) => (
-                      <DraggableWord key={en} word={en} />
+                {targetWords.map((target) => (
+                  <DroppableRow key={target} fr={target}>
+                    {matches[target]?.map((dragged) => (
+                      <DraggableWord key={dragged} word={dragged} />
                     ))}
                   </DroppableRow>
                 ))}
@@ -159,6 +201,8 @@ function App() {
           closeModal={closeModal}
         />
       )}
+
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} onSave={handleSaveSettings} />}
     </div>
   );
 }
